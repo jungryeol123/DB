@@ -108,7 +108,12 @@ where birth_date like '1990%' and city in('대구','경주') and gender = 'm';
 
 -- Q23) 1990년에 출생한 남자 고객의 이름, 아이디, 성별, 지역, 전화번호, 생일, 포인트를 조회하세요.
 --      단, 홍길동(gildong) 형태로 이름과 아이디를 묶어서 조회하세요.
+-- select customer_name as customer_name'('customer_id')', gender, city, phone, birth_date, point
+-- from customer
+-- where birth_date like '1990%';
 
+select customer_name ,point
+from customer;
 
 -- Q24) 근무중인 직원의 이름, 사원번호, 성별, 전화번호, 입사일를 조회하세요.
 select *
