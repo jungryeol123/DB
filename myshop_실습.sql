@@ -108,9 +108,10 @@ where birth_date like '1990%' and city in('대구','경주') and gender = 'm';
 
 -- Q23) 1990년에 출생한 남자 고객의 이름, 아이디, 성별, 지역, 전화번호, 생일, 포인트를 조회하세요.
 --      단, 홍길동(gildong) 형태로 이름과 아이디를 묶어서 조회하세요.
--- select customer_name as customer_name'('customer_id')', gender, city, phone, birth_date, point
--- from customer
+select concat(customer_name,'(',customer_id,')') as 고객명, gender, city, phone, birth_date, point
+from customer
 -- where birth_date like '1990%';
+where left(birth_date,4) = '1990';
 
 select customer_name ,point
 from customer;
@@ -161,58 +162,144 @@ where retire_date is not null;
 **/
 /** customer 테이블 사용 **/
 -- Q01) 고객의 포인트 합을 조회하세요.
+select format(sum(point) ,0)
+from customer;
 
 -- Q02) '서울' 지역 고객의 포인트 합을 조회하세요.
+select '서울', sum(point)
+from customer
+group by '서울';
 
 -- Q03) '서울' 지역 고객의 수를 조회하세요.
+select '서울',concat(count(*),'명') 고객수
+from customer
+group by '서울';
 
 -- Q04) '서울' 지역 고객의 포인트 합과 평균을 조회하세요.
-     
+select '서울' , 
+concat(format(sum(point),0),'점') 포인트합계, 
+concat(format(avg(point),3),'점') 포인트평균
+from customer
+group by '서울';
+
 -- Q05) '서울' 지역 고객의 포인트 합, 평균, 최댓값, 최솟값을 조회하세요.
+select '서울' , 
+concat(format(sum(point),0),'점') 포인트합, 
+concat(format(avg(point),0),'점') 포인트평균, 
+concat(format(max(point),0),'점') 최댓값,
+concat(format(min(point),0),'점') 최솟값
+from customer
+group by '서울';
 
 -- Q06) 남녀별 고객의 수를 조회하세요.
+select gender, count(gender) as 고객수
+from customer
+group by gender;
 
 -- Q07) 지역별 고객의 수를 조회하세요.
 --      단, 지역 이름을 기준으로 오름차순 정렬해서 조회하세요.
+select city , count(*) as 고객수
+from customer
+group by city
+order by city;
 
- 
 -- Q08) 지역별 고객의 수를 조회하세요.
 --      단, 고객의 수가 10명 이상인 행만 지역 이름을 기준으로 오름차순 정렬해서 조회하세요.
-   
-    
+select city , count(*) 고객수
+from customer
+where city is not null
+group by city
+having count(city) >= 10
+order by city;
 -- Q09) 남녀별 포인트 합을 조회하세요.
-    
+select gender, format(sum(point),0) 포인트합
+from customer
+group by gender;
+
 -- Q10) 지역별 포인트 합을 조회하세요.
 --      단, 지역 이름을 기준으로 오름차순 정렬해서 조회하세요.
-    
+select city, format(ifnull(sum(point),0),0) 포인트합
+from customer
+group by city
+order by city;    
+
 -- Q11) 지역별 포인트 합을 조회하세요.
 --      단, 포인트 합이 1,000,000 이상인 행만 포인트 합을 기준으로 내림차순 정렬해서 조회하세요.
-
+select city, format(ifnull(sum(point),0),0) 포인트합
+from customer
+group by city
+having sum(point) >= 1000000
+order by sum(point) desc;
       
 -- Q12) 지역별 포인트 합을 조회하세요.
 --      단, 포인트 합을 기준으로 내림차순 정렬해서 조회하세요.
-   
+select city, format(ifnull(sum(point),0),0) 포인트합
+from customer
+group by city
+order by sum(point) desc;
 
 -- Q13) 지역별 고객의 수, 포인트 합을 조회하세요.
 --      단, 지역 이름을 기준으로 오름차순 정렬해서 조회하세요.
-
+ select city , format(ifnull(sum(point),0),0) 포인트합
+from customer
+group by city
+order by city;
 
 -- Q14) 지역별 포인트 합, 포인트 평균을 조회하세요.
 --      단, 포인트가 NULL이 아닌 고객을 대상으로 하며, 지역 이름을 기준으로 오름차순 정렬해서 조회하세요.
+select city, format(ifnull(sum(point),0),0) 포인트합,
+ format(ifnull(avg(point),0),0) 포인트평균
+from customer
+group by city
+order by city;
 
 -- Q15) '서울', '부산', '대구' 지역 고객의 지역별, 남녀별 포인트 합과 평균을 조회하세요.
 --      단, 지역 이름을 기준으로 오름차순, 같은 지역은 성별을 기준으로 오름차순 정렬해서 조회하세요.
-
-
+select city ,
+gender,
+format(ifnull(sum(point),0),0) 포인트합
+from customer
+group by city, gender
+having city in ('서울','대구','부산')
+order by city, gender;
+ 
 /** order_header 테이블 사용 **/
     
 -- Q16) 2019년 1월 주문에 대하여 고객아이디별 전체금액 합을 조회하세요.
-
+desc order_header;
+select order_id 고객아이디, format(ifnull(sum(total_due),0),0) 전체금액합
+from order_header
+group by order_id;
 
 -- Q17) 주문연도별 전체금액 합계를 조회하세요.
+select left(order_date,4) 주문연도,
+format(ifnull(sum(total_due),0),0) 전체금액합
+from order_header
+group by left(order_date,4);
 
 -- Q18) 2019.01 ~ 2019.06 기간 주문에 대하여 주문연도별, 주문월별 전체금액 합을 조회하세요.
+select left(order_date,4) 주문연도,
+substring(order_date, 6,2) 주문월,
+format(ifnull(sum(total_due),0),0) 전체금액합
+from order_header
+where left(order_date,7) between '2019-01' and '2019-06'
+group by left(order_date,4), substring(order_date,6,2);
 
 -- Q19) 2019.01 ~ 2019.06 기간 주문에 대하여 주문연도별, 주문월별 전체금액 합과 평균을 조회하세요.
+select left(order_date,4) 주문연도, 
+substring(order_date, 6,2) 주문월,
+format(ifnull(sum(total_due),0),0) 전체금액합,
+format(ifnull(avg(total_due),0),0) 전체금액평균
+from order_header
+where left(order_date,7) between '2019-01' and '2019-06'
+group by left(order_date,4), substring(order_date,6,2);
+
 
 -- Q20) 주문연도별, 주문월별 전체금액 합과 평균을 조회하고, rollup 함수를 이용하여 소계와 총계를 출력해주세요.
+select left(order_date,4) 주문연도, 
+substring(order_date, 6,2) 주문월,
+format(ifnull(sum(total_due),0),0) 전체금액합,
+format(ifnull(avg(total_due),0),0) 전체금액평균
+from order_header
+where left(order_date,7) between '2019-01' and '2019-06'
+group by left(order_date,4), substring(order_date,6,2) with rollup;
