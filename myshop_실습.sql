@@ -296,7 +296,7 @@ group by left(order_date,4), substring(order_date,6,2);
 
 
 -- Q20) 주문연도별, 주문월별 전체금액 합과 평균을 조회하고, rollup 함수를 이용하여 소계와 총계를 출력해주세요.
-select left(order_date,4) 주문연도, 
+select left(order_date,4) 주문연도,   
 substring(order_date, 6,2) 주문월,
 format(ifnull(sum(total_due),0),0) 전체금액합,
 format(ifnull(avg(total_due),0),0) 전체금액평균
