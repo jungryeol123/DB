@@ -399,6 +399,12 @@ where e.employee_name = '다정한';
 select c.customer_id, e.employee_id, p.product_id,p.product_name, oh.order_date
 from customer c, employee e, order_header oh, order_detail od, product p
 where c.customer_id = oh.customer_id and e.employee_id = oh.employee_id and oh.order_id = od.order_id and od.product_id = p.product_id
-and p.product_name like '%청소기%'; 
+and p.product_name like '%청소기%';   
+
+
+
+
+
+
 
 
