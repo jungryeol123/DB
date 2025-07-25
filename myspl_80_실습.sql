@@ -1261,7 +1261,7 @@ select  * from emp;
 
 -- 홍홍 사원 삭제
 delete from emp
-	where emp_id = 's004';
+	where emp_id = 's004';  
 rollback;
 
 
