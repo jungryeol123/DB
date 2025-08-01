@@ -1874,7 +1874,10 @@ select * from salary_log;
 select * from employee;
 drop trigger trg_emp_id;
 
-
+-- Connection 확인
+show status like 'Threads_connected';  -- 접속 커넥션 수
+show processlist;					   -- 활성중인 커넥션
+show variables like 'max_connections'; -- 최대 접속 가능 커넥션 수
 
 
 
